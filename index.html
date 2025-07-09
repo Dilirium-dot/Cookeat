@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кукит</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: rgb(239, 238, 238);
+            color: rgb(0, 0, 0);
+            padding-bottom: 60px; /* Для навигации */
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .logo span:first-child {
+            color: #ff0000;
+        }
+        
+        .logo span:last-child {
+            color: #00b93b;
+        }
+        
+        .container {
+            
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 250px;
+            padding: 0 15px;
+            
+        }
+        
+        .add-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 0 1px #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: #c42424;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #28cd35;
+            color: rgb(255, 255, 255);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 16px;
+        }    
+        
+        .food-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            
+        }
+        
+        .food-item {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px #ddd;
+            position: relative;
+            padding: 0;
+            margin: 5px;
+        }
+        
+        .food-image {
+            height: 150px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .food-details {
+            padding: 15px;
+            display: grid;
+            text-align: center;
+            grid-template-rows: repeat(3, 1fr);
+            grid-template-areas:
+            "name"
+            "cost"
+            "weight";
+            margin-bottom: 10px;
+            align-items: center;
+
+            
+        }
+        
+        .food-name {
+            font-weight: bold;
+            margin-bottom: auto;
+            grid-area: name;
+            font-size: larger;
+
+
+            
+        }
+        
+        .food-price {
+            color: #50b421;
+            font-weight: bold;
+            margin-bottom: auto;
+            grid-area: cost;
+        }
+        
+        .food-weight {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+            grid-area: weight;
+        }
+        
+        .buy-btn {
+            background-color: #d31616;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            bottom: 0px;
+            font-weight: bold;
+        }
+
+        .buy-btn:hover {
+            background-color: #28cd35;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            bottom: 0px;
+            font-weight: bold;
+        }
+
+        
+        /* NEW: Навигация с тремя плашками */
+        .navigation {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            color: black;
+            font-weight: bold;
+            text-align: center;
+            border-right: 1px solid #ffffff;
+        }
+        .nav-btn:hover {
+            background: #ededed;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            color: rgb(79, 8, 8);
+            font-weight: bold;
+            text-align: center;
+            border-right: 1px solid #ffffff;
+        }
+        
+        
+        .nav-btn:last-child {
+            border-right: none;
+        }
+        
+        .nav-btn.active {
+            background: #f0f0f0;
+            
+        }
+        
+        .page {
+            margin-bottom: 70px;
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* NEW: Стили для страницы корзины */
+        .cart-page {
+            padding: 15px;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-total {
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: right;
+            font-size: 18px;
+        }
+
+        .header-name {
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 200px;
+            margin: 0 auto;
+            z-index: 1000;
+        }
+        .cancel-btn {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-radius: 8px;
+            margin: 0;
+            background-color: #eee;
+
+        }
+
+        .btn-cont {
+            width: 100%;
+            height: 30px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-btn {
+            background-color: white;
+            border: none;
+            font-size: xx-large;
+        }
+
+        .console-cont {
+            width: 80%;
+            height: 40px;
+            margin-left: 40px;
+            background-color: #eee;
+            border: #eee solid 1px;
+            border-radius: 4em;
+            font-size: larger;
+        }
+        .console{
+            width: 80%;
+            height: 35px;
+            margin-left: 40px;
+            background-color: #eee;
+            border: #eee solid 1px;
+            font-size: larger;
+            right: 10px;
+            outline: none;
+        }
+
+        .search {
+            height: 35px;
+            width: 10%;
+            font-size: larger;
+            margin-right: 40px;
+            margin-left: 20px;
+            border: #ffffff solid 1px;
+            border-radius: 3em;
+        }
+        
+        /* Стиль для скрытых элементов */
+        .hidden {
+            display: none !important;
+        }
+        
+    </style>
+
+</head>
+<body>
+    <div class="header-name">
+        <img width="auto" height="140px" src="newlogo.jpg" alt="logo">
+        <div class="console-cont">
+             <input class="console" id="console" type="text">
+        </div>
+        <button class="search" id="search">Поиск</button>
+        <button class="search" id="reset-search" style="display: none;">Сбросить</button>
+    </div>
+    
+    <div class="container">
+        <!-- Главная страница -->
+        <div class="page active" id="main-page">
+            <div class="food-list" id="food-container">
+                <!-- 10 блюд по умолчанию -->
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://images.unsplash.com/photo-1611270629569-8b357cb88da9?w=500&auto=format&fit=crop" alt="Макароны">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Макароны с сыром</div>
+                        <div class="food-price">700 руб</div>
+                        <div class="food-weight">400 г</div>
+                        <div class="btn-cont">
+                            <button class="buy-btn" onclick="addToCart('Макароны с сыром', 700)">В корзину</button>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://www.chefmarket.ru/blog/wp-content/uploads/2020/10/pizza-margherita--2000x1200.jpg" alt="Пицца">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Пицца Маргарита</div>
+                        <div class="food-price">1200 руб</div>
+                        <div class="food-weight">600 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Пицца Маргарита', 1200)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://cookhelp.ru/upload/recipes/salat_grecheskiy_klassicheskiy.jpg" alt="Салат">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Греческий салат</div>
+                        <div class="food-price">850 руб</div>
+                        <div class="food-weight">350 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Греческий салат', 850)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://www.steakhome.ru/upload/img/retsept-steyka-iz-govyadiny-na-skovorode3.jpg" alt="Стейк">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Стейк из говядины</div>
+                        <div class="food-price">1500 руб</div>
+                        <div class="food-weight">300 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Стейк из говядины', 1500)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://images.unsplash.com/photo-1546793665-c74683f339c1?w=500&auto=format&fit=crop" alt="Салат">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Салат Цезарь</div>
+                        <div class="food-price">950 руб</div>
+                        <div class="food-weight">400 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Салат Цезарь', 950)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://images.gastronom.ru/vTefmqT6fXi-97_YTgz2Jl5OHGX2DXZJx7lFBiXHZXA/pr:recipe-preview-image/g:ce/rs:auto:0:0:0/L2Ntcy9hbGwtaW1hZ2VzLzVkMWY5MTNmLWY3YzgtNDg1Mi05NTE1LTQyYmJiOWM0NjM2Yi5qcGc" alt="Бургер">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Чизбургер</div>
+                        <div class="food-price">650 руб</div>
+                        <div class="food-weight">350 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Чизбургер', 650)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=500&auto=format&fit=crop" alt="Паста">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Паста Карбонара</div>
+                        <div class="food-price">900 руб</div>
+                        <div class="food-weight">450 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Паста Карбонара', 900)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=500&auto=format&fit=crop" alt="Десерт">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Тирамису</div>
+                        <div class="food-price">600 руб</div>
+                        <div class="food-weight">200 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Тирамису', 600)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?w=500&auto=format&fit=crop" alt="Суши">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Роллы Филадельфия</div>
+                        <div class="food-price">1100 руб</div>
+                        <div class="food-weight">250 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Роллы Филадельфия', 1100)">В корзину</button></div>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <div class="food-image">
+                        <img src="https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?w=500&auto=format&fit=crop" alt="Суп">
+                    </div>
+                    <div class="food-details">
+                        <div class="food-name">Том Ям</div>
+                        <div class="food-price">800 руб</div>
+                        <div class="food-weight">500 г</div>
+                        
+                        <div class="btn-cont"><button class="buy-btn" onclick="addToCart('Том Ям', 800)">В корзину</button></div>
+                    </div>
+                </div>
+                
+               
+            </div>
+        </div>
+
+        
+        <!-- Страница добавления -->
+        <div class="page" id="add-page">
+            <div class="add-form">
+                <div class="form-group">
+                    <label>Добавить фото</label>
+                    <input type="file" id="food-image" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>Введите название</label>
+                    <input type="text" id="food-name" placeholder="Название блюда">
+                </div>
+                <div class="form-group">
+                    <label>Введите цену</label>
+                    <input type="number" id="food-price" placeholder="Цена в рублях">
+                </div>
+                <div class="form-group">
+                    <label>Введите вес</label>
+                    <input type="text" id="food-weight" placeholder="Вес порции">
+                </div>
+                <div class="form-group">
+                    <label>Описание</label>
+                    <textarea id="food-desc" placeholder="Описание блюда"></textarea>
+                </div>
+                <button class="submit-btn" id="add-btn">Выставить</button>
+            </div>
+        </div>
+        
+        <!-- NEW: Страница корзины -->
+        <div class="page" id="cart-page">
+            <div class="cart-page">
+                <h2>Ваша корзина</h2>
+                <div id="cart-items">
+                    <!-- Товары будут здесь -->
+                </div>
+                <div class="cart-total" id="cart-total">
+                    Итого: 0 руб
+                </div>
+                <button class="submit-btn" onclick="checkout()">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- NEW: Навигация с тремя плашками -->
+    <div class="navigation">
+        <button class="nav-btn active" onclick="showPage('main-page')">Главная</button>
+        <button class="nav-btn" onclick="showPage('add-page')">Добавить</button>
+        <button class="nav-btn" onclick="showPage('cart-page')">Корзина (<span id="cart-count">0</span>)</button>
+    </div>
+    
+    <script>
+        // Данные корзины
+        let cart = [];
+        
+        // Добавление в корзину
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+            alert(`${name} добавлен в корзину!`);
+        }
+        
+        // Обновление корзины
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+            
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>${item.price} руб</span>
+                    <button class ="delete-btn" onclick="removeFromCart(${index})">×</button>
+                `;
+                cartItems.appendChild(div);
+            });
+            
+            cartCount.textContent = cart.length;
+            
+            // Считаем общую сумму
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            cartTotal.textContent = `Итого: ${total} руб`;
+        }
+        
+        // Удаление из корзины
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+        
+        // Оформление заказа
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Корзина пуста!');
+                return;
+            }
+            alert('Заказ оформлен! Сумма: ' + 
+                  cart.reduce((sum, item) => sum + item.price, 0) + ' руб');
+            cart = [];
+            updateCart();
+        }
+        
+        // Переключение страниц
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            
+            // Обновляем активную кнопку навигации
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        // Обработчик добавления блюда
+        document.getElementById('add-btn').addEventListener('click', function() {
+            const fileInput = document.getElementById('food-image');
+            const nameInput = document.getElementById('food-name');
+            const priceInput = document.getElementById('food-price');
+            const weightInput = document.getElementById('food-weight');
+            const descInput = document.getElementById('food-desc');
+            
+            if (!fileInput.files[0] || !nameInput.value || !priceInput.value || !weightInput.value) {
+                alert('Заполните все обязательные поля!');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const foodItem = `
+                    <div class="food-item">
+                        <div class="food-image">
+                            <img src="${e.target.result}" alt="${nameInput.value}">
+                        </div>
+                        <div class="food-details">
+                            <div class="food-name">${nameInput.value}</div>
+                            <div class="food-price">${priceInput.value} руб</div>
+                            <div class="food-weight">${weightInput.value}</div>
+                            <button class="buy-btn" onclick="addToCart('${nameInput.value}', ${priceInput.value})">В корзину</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('food-container').insertAdjacentHTML('afterbegin', foodItem);
+                
+                // Очищаем форму
+                fileInput.value = '';
+                nameInput.value = '';
+                priceInput.value = '';
+                weightInput.value = '';
+                descInput.value = '';
+                
+                // Возвращаемся на главную
+                showPage('main-page');
+            };
+            
+            reader.readAsDataURL(fileInput.files[0]);
+        });
+
+        // Функция поиска и фильтрации карточек
+        function searchAndFilterCards(searchText) {
+            const foodItems = document.querySelectorAll('.food-item');
+            let foundAny = false;
+            
+            foodItems.forEach(item => {
+                const foodName = item.querySelector('.food-name').textContent.toLowerCase();
+                if (foodName.includes(searchText.toLowerCase())) {
+                    item.classList.remove('hidden');
+                    foundAny = true;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+            
+            return foundAny;
+        }
+
+        // Функция сброса поиска
+        function resetSearch() {
+            const foodItems = document.querySelectorAll('.food-item');
+            foodItems.forEach(item => {
+                item.classList.remove('hidden');
+            });
+            
+            document.getElementById('console').value = '';
+            document.getElementById('reset-search').style.display = 'none';
+        }
+
+        // Обработчик поиска
+        document.getElementById('search').addEventListener('click', function() {
+            const searchText = document.getElementById('console').value.trim();
+            
+            if (searchText === '') {
+                resetSearch();
+                return;
+            }
+            
+            const found = searchAndFilterCards(searchText);
+            
+            if (found) {
+                document.getElementById('reset-search').style.display = 'block';
+            } else {
+                alert('Ничего не найдено');
+            }
+        });
+
+        // Обработчик сброса поиска
+        document.getElementById('reset-search').addEventListener('click', resetSearch);
+
+        // Обработчик нажатия Enter в поле поиска
+        document.getElementById('console').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('search').click();
+            }
+        });
+    </script>
+</body>
+</html>
