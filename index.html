@@ -344,6 +344,41 @@
         .hidden {
             display: none !important;
         }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-name {
+            font-weight: bold;
+            margin: 20px 0;
+            font-size: xx-large;
+
+        }
+
+        .history-card {
+            margin: 10px 0;
+            font-weight: bold;
+            border: rgb(239, 238, 238) solid 3px;
+            border-bottom: #939191 solid 2px;
+            font-size: larger;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .history-card div:first-child {
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .history-card div:last-child {
+            color: #c42424;
+            font-size: 18px;
+        }
+        
         
     </style>
 
@@ -531,6 +566,11 @@
                 </div>
                 <button class="submit-btn" onclick="checkout()">Оформить заказ</button>
             </div>
+            <div class="history">
+                <div class="history-name">История покупок</div>
+                <div class="history-list" id="history-list">
+                </div>
+            </div>
         </div>
     </div>
     
@@ -583,18 +623,37 @@
             updateCart();
         }
         
+        
+        
         // Оформление заказа
-        function checkout() {
-            if (cart.length === 0) {
-                alert('Корзина пуста!');
-                return;
-            }
-            alert('Заказ оформлен! Сумма: ' + 
-                  cart.reduce((sum, item) => sum + item.price, 0) + ' руб');
-            cart = [];
-            updateCart();
+    function checkout() {
+        if (cart.length === 0) {
+            alert('Корзина пуста!');
+            return;
         }
         
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        alert('Заказ оформлен! Сумма: ' + total + ' руб');
+        
+        // Получаем список названий товаров
+        const itemsList = cart.map(item => item.name).join(', ');
+        historyAdd(total, itemsList); // Передаем оба параметра
+        
+        cart = [];
+        updateCart();
+    }
+
+    function historyAdd(cost, items) {
+        const Hislist = document.getElementById('history-list');
+        const historyItem = `
+            <div class="history-card">
+                <div>Товары: ${items}</div>
+                <div>Сумма: -${cost} рублей</div>
+            </div>
+        `;
+        Hislist.insertAdjacentHTML('afterbegin', historyItem);
+    }
+         
         // Переключение страниц
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => {
